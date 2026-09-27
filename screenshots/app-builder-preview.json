@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Kaleido",
+      "hasCanvas": true,
+      "bodyTextLen": 29,
+      "bodyTextHash": "705d1d815a6fc1f7c23443b92fa5d79965b4f9339b6490a19f80c54d14c4cb42",
+      "bodyTextPrefix": "Refresh Short MOONWALK · NASA",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Kaleido",
+      "hasCanvas": true,
+      "bodyTextLen": 29,
+      "bodyTextHash": "705d1d815a6fc1f7c23443b92fa5d79965b4f9339b6490a19f80c54d14c4cb42",
+      "bodyTextPrefix": "Refresh Short MOONWALK · NASA",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
