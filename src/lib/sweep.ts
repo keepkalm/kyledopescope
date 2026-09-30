@@ -38,6 +38,7 @@ export type Arrangement = {
   photo: string;
   label: string;
   credit: string;
+  page: string;
   segments: number;
   spin: number;
   aimX: number;
@@ -63,6 +64,7 @@ export const OPENING: Arrangement = {
   photo: "moonwalk",
   label: "Moonwalk",
   credit: "NASA",
+  page: "https://en.wikipedia.org/wiki/Apollo_11",
   segments: 8,
   spin: 0.35,
   aimX: 0.48,
@@ -84,19 +86,22 @@ function pickWeighted<T>(items: T[], weights: number[]) {
   return items[items.length - 1];
 }
 
-export function rollArrangement(prev?: { photo: string; segments: number }): Arrangement {
+function rollPhoto(exclude?: string) {
   const taste = readTaste();
-  const photos = GALLERY.filter((item) => item.id !== prev?.photo);
+  const photos = GALLERY.filter((item) => item.id !== exclude);
   const pool = photos.length ? photos : GALLERY;
   const weights = pool.map((item) => {
     if (taste.photoUp.has(item.id)) return 5;
     if (taste.photoDown.has(item.id)) return 0.22;
     return 1;
   });
+  return { taste, photo: pickWeighted(pool, weights) ?? GALLERY[0] };
+}
 
-  let photo = pickWeighted(pool, weights) ?? GALLERY[0];
-  const segs = SEGS.filter((n) => n !== prev?.segments);
-  const likedSegs = taste.segUp.filter((n) => n !== prev?.segments);
+function rollGeometry(prevSegments?: number) {
+  const taste = readTaste();
+  const segs = SEGS.filter((n) => n !== prevSegments);
+  const likedSegs = taste.segUp.filter((n) => n !== prevSegments);
   const segments =
     likedSegs.length && Math.random() < 0.55
       ? (likedSegs[Math.floor(Math.random() * likedSegs.length)] ?? 8)
@@ -108,11 +113,7 @@ export function rollArrangement(prev?: { photo: string; segments: number }): Arr
       : Math.random() < 0.72
         ? "mirror"
         : "fan";
-
-  const draft = (): Arrangement => ({
-    photo: photo.id,
-    label: photo.label,
-    credit: photo.credit,
+  return {
     segments,
     spin: Math.random() * TAU,
     aimX: 0.3 + Math.random() * 0.4,
@@ -121,20 +122,84 @@ export function rollArrangement(prev?: { photo: string; segments: number }): Arr
     filter: FILTERS[Math.floor(Math.random() * FILTERS.length)] ?? "none",
     hue: Math.floor(Math.random() * 360),
     fold,
+  };
+}
+
+const ORBIT = 0.14;
+
+export function liveAim(turn: number, arrangement: Arrangement) {
+  return {
+    aimX: clamp(arrangement.aimX + Math.sin(turn * 0.55) * ORBIT, 0.06, 0.94),
+    aimY: clamp(arrangement.aimY + Math.cos(turn * 0.42) * ORBIT, 0.06, 0.94),
+  };
+}
+
+/** Store the aim so the live focus, including the scroll drift, lands on this point. */
+export function aimFromPoint(turn: number, x: number, y: number) {
+  return {
+    aimX: clamp(x - Math.sin(turn * 0.55) * ORBIT, 0.06, 0.94),
+    aimY: clamp(y - Math.cos(turn * 0.42) * ORBIT, 0.06, 0.94),
+  };
+}
+
+/** New point on the same picture. The mirrors, zoom, and color stay. */
+export function rollCenter(current: Arrangement): Arrangement {
+  return {
+    ...current,
+    aimX: 0.3 + Math.random() * 0.4,
+    aimY: 0.28 + Math.random() * 0.44,
+  };
+}
+export function rollImage(current: Arrangement): Arrangement {
+  const { taste, photo } = rollPhoto(current.photo);
+  const next = { ...current, photo: photo.id, label: photo.label, credit: photo.credit, page: photo.page };
+  if (!taste.blocked.has(keyOf(next))) return next;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const retry = rollPhoto(current.photo).photo;
+    const candidate = { ...current, photo: retry.id, label: retry.label, credit: retry.credit, page: retry.page };
+    if (!taste.blocked.has(keyOf(candidate))) return candidate;
+  }
+  return next;
+}
+
+/** New mirrors, crop, and color. The picture stays. */
+export function rollMirrors(current: Arrangement): Arrangement {
+  const taste = readTaste();
+  const draft = (): Arrangement => ({ ...current, ...rollGeometry(current.segments) });
+  let next = draft();
+  for (let attempt = 0; attempt < 6 && taste.blocked.has(keyOf(next)); attempt++) next = draft();
+  return next;
+}
+
+export function rollArrangement(prev?: { photo: string; segments: number }): Arrangement {
+  const { taste, photo } = rollPhoto(prev?.photo);
+  const geometry = rollGeometry(prev?.segments);
+  const draft = (shot = photo): Arrangement => ({
+    photo: shot.id,
+    label: shot.label,
+    credit: shot.credit,
+    page: shot.page,
+    segments: geometry.segments,
+    spin: Math.random() * TAU,
+    aimX: 0.3 + Math.random() * 0.4,
+    aimY: 0.28 + Math.random() * 0.44,
+    zoom: 2.05 + Math.random() * 0.85,
+    filter: geometry.filter,
+    hue: geometry.hue,
+    fold: geometry.fold,
   });
 
   let next = draft();
   for (let attempt = 0; attempt < 6 && taste.blocked.has(keyOf(next)); attempt++) {
-    photo = pickWeighted(pool, weights) ?? photo;
-    next = draft();
+    next = draft(rollPhoto(prev?.photo).photo);
   }
   return next;
 }
 
 /** `turn` is radians of scroll. One viewport of scroll is about two-thirds of a turn. */
 export function poseFrom(turn: number, arrangement: Arrangement): Pose {
-  const orbit = 0.14;
   const wrapped = ((turn % TAU) + TAU) % TAU;
+  const aim = liveAim(turn, arrangement);
   return {
     x: wrapped / TAU,
     chapter: arrangement.photo,
@@ -149,8 +214,8 @@ export function poseFrom(turn: number, arrangement: Arrangement): Pose {
         id: arrangement.photo,
         alpha: 1,
         filter: arrangement.filter,
-        aimX: clamp(arrangement.aimX + Math.sin(turn * 0.55) * orbit, 0.06, 0.94),
-        aimY: clamp(arrangement.aimY + Math.cos(turn * 0.42) * orbit, 0.06, 0.94),
+        aimX: aim.aimX,
+        aimY: aim.aimY,
       },
     ],
     word: null,
@@ -161,7 +226,7 @@ export function poseFrom(turn: number, arrangement: Arrangement): Pose {
   };
 }
 
-export type View = { w: number; h: number; dpr: number; cx: number; cy: number; radius: number };
+export type View = { w: number; h: number; dpr: number; cx: number; cy: number; radius: number; filled?: boolean };
 
 function mirrorAngle(a: number, i: number, segments: number, rotation: number) {
   const sector = TAU / segments;
@@ -366,6 +431,8 @@ export function drawSweep(
   paintWord(ctx, view, pose);
   ctx.restore();
 
+  if (view.filled) return;
+
   ctx.globalAlpha = 1;
   ctx.filter = "none";
   ctx.lineWidth = 1;
@@ -395,82 +462,6 @@ export function drawSweep(
   vignette.addColorStop(1, "rgba(12,11,10,0.78)");
   ctx.fillStyle = vignette;
   ctx.fillRect(0, 0, w, h);
-}
-
-export function createVoice() {
-  let ctx: AudioContext | null = null;
-  let master: GainNode | null = null;
-  let oscA: OscillatorNode | null = null;
-  let oscB: OscillatorNode | null = null;
-  let gainB: GainNode | null = null;
-  let filter: BiquadFilterNode | null = null;
-
-  function unlock() {
-    if (!ctx) {
-      const Ctx = window.AudioContext;
-      ctx = new Ctx();
-      master = ctx.createGain();
-      master.gain.value = 0;
-      filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 700;
-      filter.Q.value = 0.65;
-      const gainA = ctx.createGain();
-      gainB = ctx.createGain();
-      gainA.gain.value = 0.8;
-      gainB.gain.value = 0.12;
-      oscA = ctx.createOscillator();
-      oscB = ctx.createOscillator();
-      oscA.type = "sine";
-      oscB.type = "sine";
-      oscA.frequency.value = 98;
-      oscB.frequency.value = 147;
-      oscA.connect(gainA);
-      oscB.connect(gainB);
-      gainA.connect(filter);
-      gainB.connect(filter);
-      filter.connect(master);
-      master.connect(ctx.destination);
-      oscA.start();
-      oscB.start();
-    }
-    if (ctx.state === "suspended") void ctx.resume();
-  }
-
-  function set(x: number, energy: number, lock: number) {
-    if (!ctx || !master || !oscA || !oscB || !gainB || !filter) return;
-    const now = ctx.currentTime;
-    const freq = 92.5 * 2 ** (clamp(x, 0, 1) * 2);
-    oscA.frequency.setTargetAtTime(freq, now, 0.06);
-    const ratio = lock > 0.55 ? 1.25 : 1.4983;
-    oscB.frequency.setTargetAtTime(freq * ratio, now, 0.08);
-    gainB.gain.setTargetAtTime(0.12 + lock * 0.5, now, 0.08);
-    filter.frequency.setTargetAtTime(380 + x * 1500 + energy * 2000 + lock * 500, now, 0.05);
-    master.gain.setTargetAtTime(0.011 + x * 0.012 + energy * 0.03 + lock * 0.018, now, 0.06);
-  }
-
-  function blip(freq: number) {
-    if (!ctx || !master) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.value = freq;
-    const now = ctx.currentTime;
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.62);
-    osc.connect(gain);
-    gain.connect(master);
-    osc.start(now);
-    osc.stop(now + 0.64);
-  }
-
-  function close() {
-    void ctx?.close();
-    ctx = null;
-  }
-
-  return { unlock, set, blip, close };
 }
 
 export const PHOTO_SRC: Record<string, string> = Object.fromEntries(

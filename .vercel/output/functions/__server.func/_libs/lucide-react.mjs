@@ -1,5 +1,5 @@
-import { i as __toESM } from "../_runtime.mjs";
-import { K as require_react } from "./@tanstack/react-router+[...].mjs";
+import { o as __toESM } from "../_runtime.mjs";
+import { q as require_react } from "./@tanstack/react-router+[...].mjs";
 //#region node_modules/lucide-react/dist/esm/shared/src/utils.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 /**
@@ -82,42 +82,158 @@ var createLucideIcon = (iconName, iconNode) => {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Film = createLucideIcon("film", [
+var Aperture = createLucideIcon("aperture", [
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "10",
+		key: "1mglay"
+	}],
+	["path", {
+		d: "m14.31 8 5.74 9.94",
+		key: "1y6ab4"
+	}],
+	["path", {
+		d: "M9.69 8h11.48",
+		key: "1wxppr"
+	}],
+	["path", {
+		d: "m7.38 12 5.74-9.94",
+		key: "1grp0k"
+	}],
+	["path", {
+		d: "M9.69 16 3.95 6.06",
+		key: "libnyf"
+	}],
+	["path", {
+		d: "M14.31 16H2.83",
+		key: "x5fava"
+	}],
+	["path", {
+		d: "m16.62 12-5.74 9.94",
+		key: "1vwawt"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Crosshair = createLucideIcon("crosshair", [
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "10",
+		key: "1mglay"
+	}],
+	["line", {
+		x1: "22",
+		x2: "18",
+		y1: "12",
+		y2: "12",
+		key: "l9bcsi"
+	}],
+	["line", {
+		x1: "6",
+		x2: "2",
+		y1: "12",
+		y2: "12",
+		key: "13hhkx"
+	}],
+	["line", {
+		x1: "12",
+		x2: "12",
+		y1: "6",
+		y2: "2",
+		key: "10w3f3"
+	}],
+	["line", {
+		x1: "12",
+		x2: "12",
+		y1: "22",
+		y2: "18",
+		key: "15g9kq"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Download = createLucideIcon("download", [
+	["path", {
+		d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",
+		key: "ih7n3h"
+	}],
+	["polyline", {
+		points: "7 10 12 15 17 10",
+		key: "2ggqvy"
+	}],
+	["line", {
+		x1: "12",
+		x2: "12",
+		y1: "15",
+		y2: "3",
+		key: "1vk2je"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Image = createLucideIcon("image", [
 	["rect", {
 		width: "18",
 		height: "18",
 		x: "3",
 		y: "3",
 		rx: "2",
-		key: "afitv7"
+		ry: "2",
+		key: "1m3agn"
+	}],
+	["circle", {
+		cx: "9",
+		cy: "9",
+		r: "2",
+		key: "af1f0g"
 	}],
 	["path", {
-		d: "M7 3v18",
-		key: "bbkbws"
+		d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21",
+		key: "1xmnt7"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Maximize2 = createLucideIcon("maximize-2", [
+	["polyline", {
+		points: "15 3 21 3 21 9",
+		key: "mznyad"
 	}],
-	["path", {
-		d: "M3 7.5h4",
-		key: "zfgn84"
+	["polyline", {
+		points: "9 21 3 21 3 15",
+		key: "1avn1i"
 	}],
-	["path", {
-		d: "M3 12h18",
-		key: "1i2n21"
+	["line", {
+		x1: "21",
+		x2: "14",
+		y1: "3",
+		y2: "10",
+		key: "ota7mn"
 	}],
-	["path", {
-		d: "M3 16.5h4",
-		key: "1230mu"
-	}],
-	["path", {
-		d: "M17 3v18",
-		key: "in4fa5"
-	}],
-	["path", {
-		d: "M17 7.5h4",
-		key: "myr1c1"
-	}],
-	["path", {
-		d: "M17 16.5h4",
-		key: "go4c1d"
+	["line", {
+		x1: "3",
+		x2: "10",
+		y1: "21",
+		y2: "14",
+		key: "1atl0r"
 	}]
 ]);
 /**
@@ -142,6 +258,46 @@ var RefreshCw = createLucideIcon("refresh-cw", [
 	["path", {
 		d: "M8 16H3v5",
 		key: "1cv678"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Share2 = createLucideIcon("share-2", [
+	["circle", {
+		cx: "18",
+		cy: "5",
+		r: "3",
+		key: "gq8acd"
+	}],
+	["circle", {
+		cx: "6",
+		cy: "12",
+		r: "3",
+		key: "w7nqdw"
+	}],
+	["circle", {
+		cx: "18",
+		cy: "19",
+		r: "3",
+		key: "1xt0gg"
+	}],
+	["line", {
+		x1: "8.59",
+		x2: "15.42",
+		y1: "13.51",
+		y2: "17.49",
+		key: "47mynk"
+	}],
+	["line", {
+		x1: "15.41",
+		x2: "8.59",
+		y1: "6.51",
+		y2: "10.49",
+		key: "1n3mei"
 	}]
 ]);
 /**
@@ -190,5 +346,18 @@ var TriangleAlert = createLucideIcon("triangle-alert", [
 		key: "p32p05"
 	}]
 ]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var X = createLucideIcon("x", [["path", {
+	d: "M18 6 6 18",
+	key: "1bl5f8"
+}], ["path", {
+	d: "m6 6 12 12",
+	key: "d8bk6v"
+}]]);
 //#endregion
-export { Film as a, RefreshCw as i, ThumbsUp as n, ThumbsDown as r, TriangleAlert as t };
+export { Share2 as a, Image as c, Aperture as d, ThumbsDown as i, Download as l, TriangleAlert as n, RefreshCw as o, ThumbsUp as r, Maximize2 as s, X as t, Crosshair as u };

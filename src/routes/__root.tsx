@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Kaleido";
+const APP_NAME = "KyleDopeScope";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       { title: APP_NAME },
       {
         name: "description",
-        content: "Scroll up and down to turn the kaleidoscope. Refresh for a new picture and mirror arrangement.",
+        content: "KyleDopeScope. Scroll to turn the tube. Image for a new picture, Mirrors for a new arrangement.",
       },
       { name: "theme-color", content: "#0c0b0a" },
     ],
